@@ -1,0 +1,34 @@
+ManifestFileVersion: 0
+CRC: 2502690885
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: resources/cube.prefab
+      Dependencies: {}
+    Info_1:
+      Name: resources/cube 1.prefab
+      Dependencies: {}
+    Info_2:
+      Name: resources/cube 2.prefab
+      Dependencies: {}
+    Info_3:
+      Name: resources/cube 3.prefab
+      Dependencies: {}
+    Info_4:
+      Name: resources/cube 4.prefab
+      Dependencies: {}
+    Info_5:
+      Name: resources/cube 5.prefab
+      Dependencies: {}
+    Info_6:
+      Name: resources/cube 6.prefab
+      Dependencies: {}
+    Info_7:
+      Name: resources/cube 7.prefab
+      Dependencies: {}
+    Info_8:
+      Name: resources/cube 8.prefab
+      Dependencies: {}
+    Info_9:
+      Name: resources/cube 9.prefab
+      Dependencies: {}

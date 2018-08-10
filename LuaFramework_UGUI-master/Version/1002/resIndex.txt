@@ -1,0 +1,4 @@
+Android|a3b3b5675058a3b7f96a3ede62f1e644
+Android.manifest|8e1884a808e6a6c95f57cc3f940cce3c
+resources/cube.prefab|21d1ca80bb6bd896d4930851e80b8cb2
+resources/cube.prefab.manifest|749e045bc2aff44d20cbf145a5e4d143

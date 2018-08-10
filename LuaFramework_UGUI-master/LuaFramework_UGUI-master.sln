@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaFramework_UGUI-master", "LuaFramework_UGUI-master.csproj", "{4F73E3B6-B25F-D429-7EC7-EDC71049C0D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaFramework_UGUI-master.Editor", "LuaFramework_UGUI-master.Editor.csproj", "{7DBFE99A-179D-39C0-4932-1BD7D064F170}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F73E3B6-B25F-D429-7EC7-EDC71049C0D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F73E3B6-B25F-D429-7EC7-EDC71049C0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F73E3B6-B25F-D429-7EC7-EDC71049C0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F73E3B6-B25F-D429-7EC7-EDC71049C0D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DBFE99A-179D-39C0-4932-1BD7D064F170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DBFE99A-179D-39C0-4932-1BD7D064F170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DBFE99A-179D-39C0-4932-1BD7D064F170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DBFE99A-179D-39C0-4932-1BD7D064F170}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
