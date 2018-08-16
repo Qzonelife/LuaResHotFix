@@ -146,6 +146,7 @@
     <None Include="Assets\LuaFramework\ToLua\Injection\InjectionBridgeEditorInfo.xml" />
     <None Include="Assets\LuaFramework\ToLua\Injection\LuaInjectionSkipPaths.txt" />
     <None Include="Assets\LuaFramework\ToLua\readme.txt" />
+    <None Include="Assets\Resources\ExtInfo\versionInfo.xml" />
     <None Include="Assets\StreamingAssets\files.txt" />
     <None Include="Assets\StreamingAssets\resIndex.txt" />
     <None Include="Assets\StreamingAssets\versionInfo.xml" />

@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 1db778d26bc54454eb15defd39be2531
-timeCreated: 1533557655
+guid: 826ead14d3bf4704390a7243fafdb1f1
+timeCreated: 1534299212
 licenseType: Pro
 NativeFormatImporter:
   userData: 
-  assetBundleName: resources/cube.prefab
+  assetBundleName: resources/ui/cube.prefab
   assetBundleVariant: 

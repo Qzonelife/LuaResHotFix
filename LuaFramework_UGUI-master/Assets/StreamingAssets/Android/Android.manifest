@@ -1,7 +1,10 @@
 ManifestFileVersion: 0
-CRC: 2528510488
+CRC: 4110658081
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: resources/cube.prefab
+      Dependencies: {}
+    Info_1:
+      Name: resources/sphere.prefab
       Dependencies: {}

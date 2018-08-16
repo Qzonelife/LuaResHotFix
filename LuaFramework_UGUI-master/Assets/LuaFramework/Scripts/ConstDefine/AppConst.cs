@@ -33,8 +33,9 @@ namespace LuaFramework {
         public const string AppPrefix = AppName + "_"; //应用程序前缀
         public const string ExtName = ".unity3d"; //素材扩展名
         public const string AssetDir = "StreamingAssets"; //素材目录 
-        public const string WebUrl = "http://192.168.10.218//"; //测试更新地址
-
+        public const string WebUrl = "http://192.168.30.165//"; //测试更新地址
+        public const string RemoteApkInfo = "http://192.168.30.165//ApkInfo.xml"; //远程地址
+        public const string RemoteUpdatePath = "http://192.168.30.165//"; //远程的更新地址，对应版本号加上对应的版本号路径跟资源路径
         public const string versionBase = "1000"; //基础版本号
 
 

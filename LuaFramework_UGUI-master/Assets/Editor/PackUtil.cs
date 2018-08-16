@@ -2,11 +2,14 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using LuaFramework;
 using UnityEditor;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 public class PackUtil : Editor {
@@ -124,6 +127,12 @@ public class PackUtil : Editor {
         return true;
     }
 
+    [MenuItem("Zone/Test")]
+    public static void Test()
+    {
+
+       
+    }
 
     [MenuItem("Zone/打包所有assetbundle")]
     public static void PackAb()
@@ -138,6 +147,7 @@ public class PackUtil : Editor {
             EditorUserBuildSettings.activeBuildTarget);
         AssetDatabase.Refresh();
     }
+
 
     private static List<string> files = new List<string>();
     [MenuItem("Zone/生成resourcesIndex")]
@@ -179,6 +189,8 @@ public class PackUtil : Editor {
         BuildResIndex();
         Debug.Log("一键打包资源完毕");
     }
+
+
  
     /// <summary>
     /// 生成版本差异文件
@@ -186,43 +198,53 @@ public class PackUtil : Editor {
     [MenuItem("Zone/生成版本差异文件")]
     static void GenVersionFiles()
     {
+
         if (!Directory.Exists(AppConst.VersionPath))
         {
             Directory.CreateDirectory(AppConst.VersionPath);
         }
+
+
+       
+
+        if (!File.Exists(Application.streamingAssetsPath + "/versionInfo.xml"))
+        {
+            EditorUtility.DisplayDialog("提示", "没有发现versionInfo.xml版本文件，请先更新版本文件:Zone->更新版本信息", "我知道了");
+            return;
+        }
+
+        ///首先拿到本地当前版本信息,如果已经存在则需要进行覆盖操作
         VersionVo versionInfo = new VersionVo(Application.streamingAssetsPath + "/versionInfo.xml");
-        versionInfo.resVersion = "1000";
-        Debug.Log(versionInfo.isResVersionNeedUpdate("1000"));
-    
-        return;
+        string versionTargetPath = AppConst.VersionPath + "/" + versionInfo.ResVersion;
+        if (Directory.Exists(versionTargetPath)) //检查当前是否已经存在目录，如果有的话检查是否需要覆盖版本文件
+        {
+         
+            bool ctn = EditorUtility.DisplayDialog("提示", "当前版本已经存在，是否需要覆盖当前版本", "继续","取消");
+            if (!ctn)
+            {
+                Debug.Log("取消更新");
+                return;
+            }
+            else
+            {
+                Directory.Delete(versionTargetPath,true);
+            }
+        }
+
+        long diffResSize = 0; //差异文件大小
         string[] dirs = Directory.GetDirectories(AppConst.VersionPath);
         string sourcePath = Application.streamingAssetsPath;
-        
+        //如果当前版本文件夹下没有原始版本，先进行备份
         if (dirs.Length == 0)
         {
             EditorUtility.DisplayDialog("提示", "没有发现版本文件，直接备份文件资源", "继续");
-            string tarPath = AppConst.VersionPath + "/" + AppConst.versionBase;
+            string tarPath = AppConst.VersionPath + "/" + versionInfo.ResVersion;
             CopyVersionInfoToTarget(tarPath);
             return;
-          
-//            Directory.CreateDirectory(tarPath);
-//            List<string> files = ZFileUtil.GetAllFiles(sourcePath); //获取所有文件
-//            //将文件移到对应目录
-//            foreach (var file in files)
-//            {
-//                string fName = Path.GetFileName(file); //文件名
-//                string pathComb = file.Replace(sourcePath, "");
-//                string targetFolder = tarPath +"/"+ Path.GetDirectoryName(file).Replace(sourcePath,"");
-//                if (!Directory.Exists(targetFolder))
-//                {
-//                    Directory.CreateDirectory(targetFolder);
-//                }
-//                File.Copy(file,targetFolder+"/"+fName,true);
-//            }
-
         }
 
-        int baseDir = int.Parse(AppConst.versionBase); //最大版本的版本文件夹，用于与当前文件夹做对比
+
+        int baseDir = int.Parse(AppConst.versionBase); //最大版本的版本文件夹，用于与当前streamingasset文件夹做对比
         foreach (var dir in dirs)
         {
             string tarDir = dir.Replace("\\","/");
@@ -242,6 +264,8 @@ public class PackUtil : Editor {
             }
         }
         string compareDir = AppConst.VersionPath + "/" + baseDir;
+        VersionVo compareVersionInfo = new VersionVo(compareDir+"/versionInfo.xml");
+
         string nextVersionDir = AppConst.VersionPath + "/UpdateRes/"+(baseDir + 1).ToString(); //差异生成文件夹
         if (!Directory.Exists(nextVersionDir))
         {
@@ -249,7 +273,7 @@ public class PackUtil : Editor {
         }
         string sourceFileIndex = File.ReadAllText(sourcePath + "/" + "files.txt");
         string compFileIndex = File.ReadAllText(compareDir + "/files.txt");
-
+        sourceFileIndex = sourceFileIndex.Replace("\r", "");
         string[] sFiles = sourceFileIndex.Split('\n');
         
         string appenInfo = "";
@@ -268,13 +292,13 @@ public class PackUtil : Editor {
             if (!File.Exists(localFile)) //如果没有资源，则是新增的内容，直接复制差异资源
             {
                 appenInfo += "\n";
-                appenInfo += sFiles[i];
+                appenInfo += sFiles[i]+"|"+GetFileSize(localFile);
                 string dir = Path.GetDirectoryName(newFilePath);
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
-                File.Copy(sourcePath+"/"+f,newFilePath);
+                File.Copy(sourcePath+"/"+f,newFilePath,true);
             }
             else
             {
@@ -282,13 +306,13 @@ public class PackUtil : Editor {
                 if (!oldMd5.Equals(md5)) //md5信息变更，更新文件信息
                 {
                     appenInfo += "\n";
-                    appenInfo += sFiles[i];
+                    appenInfo += sFiles[i]+"|"+GetFileSize(localFile);
                     string dir = Path.GetDirectoryName(newFilePath);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
-                    File.Copy(sourcePath + "/" + f, newFilePath);
+                    File.Copy(sourcePath + "/" + f, newFilePath,true);
                 }
             }
         }
@@ -298,6 +322,7 @@ public class PackUtil : Editor {
 
         //更新游戏资源
         string sourceResIndex = File.ReadAllText(sourcePath + "/" + "resIndex.txt");
+        sourceResIndex = sourceResIndex.Replace("\r", ""); //去除\r
         string[] rFiles = sourceResIndex.Split('\n');
         for (int i = 0; i < rFiles.Length; i++)
         {
@@ -310,16 +335,17 @@ public class PackUtil : Editor {
             string md5 = kv[1].Trim();
             string localFile = compareDir + "/Android/" + f; //对比文件
             string newFilePath = nextVersionDir + "/Android/" + f;  //新的文件位置 
+            string androidFileSource = sourcePath + "/Android/" + f;
             if (!File.Exists(localFile)) //如果没有资源，则是新增的内容，直接复制差异资源
             {
                 appenInfo += "\n";
-                appenInfo += rFiles[i];
+                appenInfo += rFiles[i]+ "|" + GetFileSize(androidFileSource); ;
                 string dir = Path.GetDirectoryName(newFilePath);
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
-                File.Copy(sourcePath + "/Android/" + f, newFilePath);
+                File.Copy(androidFileSource, newFilePath,true);
             }
             else
             {
@@ -327,23 +353,57 @@ public class PackUtil : Editor {
                 if (!oldMd5.Equals(md5)) //md5信息变更，更新文件信息
                 {
                     appenInfo += "\n";
-                    appenInfo += rFiles[i];
+                    appenInfo += rFiles[i]+ "|" + GetFileSize(androidFileSource); ;
                     string dir = Path.GetDirectoryName(newFilePath);
                     if (!Directory.Exists(dir))
                     {
                         Directory.CreateDirectory(dir);
                     }
-                    File.Copy(sourcePath + "/Android/" + f, newFilePath);
+                    File.Copy(androidFileSource, newFilePath,true);
                 }
             }
         }
+
+        //最后将当前版本完整资源进行备份
+        CopyVersionInfoToTarget(AppConst.VersionPath + "/" + (baseDir + 1));
+//        string[] files = appenInfo.Split('\n'); //通过生成的差异文件找到差异文件的大小进行计算
+//        for (int i = 0; i < files.Length; i++)
+//        {
+//            string[] str = files[i].Split('|');
+//            if (str.Length != 2)
+//            {
+//                continue;
+//            }
+//            string calFile = nextVersionDir + "/" + str[0];
+//            diffResSize += GetFileSize(calFile);
+//            Debug.Log("差异文件信息:"+files[i]);
+//        }
         //appenInfo = "version:" + (baseDir + 1) + "/n" + appenInfo;
         appenInfo = appenInfo+"\n"+ "version:" + (baseDir + 1);
         File.Copy(sourcePath + "/" + "resIndex.txt", nextVersionDir + "/resIndex.txt", true); //直接更新file.txt文件
         File.WriteAllText(nextVersionDir + "/resUpdate.txt",appenInfo); //更新差异文件资源
-        
-        //最后将当前版本完整资源进行备份
-        CopyVersionInfoToTarget(AppConst.VersionPath + "/"+ (baseDir + 1));
+        compareVersionInfo.ResVersion = versionInfo.ResVersion;
+        compareVersionInfo.AppenVersionDetail(versionInfo.ResVersion, appenInfo);
+        compareVersionInfo.WriteVersionInfo(nextVersionDir + "/versionInfo.xml");
+        compareVersionInfo.WriteVersionInfo(AppConst.VersionPath + "/" + (baseDir + 1) + "/versionInfo.xml"); //同时需要将最新的版本差异完整信息复制
+
+        Process.Start(nextVersionDir);
+
+
+    }
+
+    [MenuItem("Zone/更新版本信息")]
+    /// <summary>
+    /// 更新版本信息，将res下的版本信息更新到streamingAssets
+    /// </summary>
+    public static void UpdateVersionInfo()
+    {
+        File.Copy(Application.dataPath+"/Resources/ExtInfo/versionInfo.xml",Application.streamingAssetsPath+"/versionInfo.xml",true);
+//        File.Copy(Application.dataPath + "/Resources/ExtInfo/currentInfo.xml", Application.streamingAssetsPath + "/currentInfo.xml", true);
+        AssetDatabase.Refresh();
+        Debug.Log("更新完毕");
+        VersionVo vo = new VersionVo(Application.dataPath + "/Resources/ExtInfo/versionInfo.xml");
+        Debug.Log("当前大版本号："+vo.CurrentVersion+"，当前资源号："+vo.ResVersion);
     }
 
     /// <summary>
@@ -374,6 +434,17 @@ public class PackUtil : Editor {
         Regex rx = new Regex(pattern);
         return rx.IsMatch(value);
     }
+
+    public static long GetFileSize(string path)
+    {
+        if (File.Exists(path))
+        {
+            FileInfo f = new FileInfo(path);
+            return f.Length;
+        }
+        return 0;
+    }
+
 
 
 }

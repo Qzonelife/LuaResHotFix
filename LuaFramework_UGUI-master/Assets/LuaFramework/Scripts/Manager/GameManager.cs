@@ -57,7 +57,7 @@ namespace LuaFramework {
             Directory.CreateDirectory(dataPath);
 
             string infile = resPath + "files.txt";
-            string outfile = dataPath + "lua" + "files.txt";
+            string outfile = dataPath  + "files.txt";
             if (File.Exists(outfile)) File.Delete(outfile);
 
             string message = "正在解包文件:>files.txt";
@@ -123,6 +123,22 @@ namespace LuaFramework {
                 yield return 0;
             }
             else File.Copy(resInFile, resOutFile, true);
+
+            string inApkInfo = resPath + "versionInfo.xml";
+            string outApkInfo = dataPath + "versionInfo.xml";
+            if (File.Exists(outApkInfo)) File.Delete(outApkInfo);
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                WWW www = new WWW(inApkInfo);
+                yield return www;
+
+                if (www.isDone)
+                {
+                    File.WriteAllBytes(outApkInfo, www.bytes);
+                }
+                yield return 0;
+            }
+            else File.Copy(inApkInfo, outApkInfo, true);
 
             //释放所有文件到数据目录
             string[] resFiles = File.ReadAllLines(resOutFile);

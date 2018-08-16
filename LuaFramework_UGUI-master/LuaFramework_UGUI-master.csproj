@@ -298,7 +298,9 @@
     <Compile Include="Assets\LuaFramework\ToLua\Source\Generate\ViewWrap.cs" />
     <Compile Include="Assets\LuaFramework\ToLua\Source\LuaConst.cs" />
     <Compile Include="Assets\Scripts\DownTest.cs" />
+    <Compile Include="Assets\Scripts\Manager\VersionManager.cs" />
     <Compile Include="Assets\Scripts\Update\PreInit.cs" />
+    <Compile Include="Assets\Scripts\Util\NumUtil.cs" />
     <Compile Include="Assets\Scripts\Util\ZFileUtil.cs" />
     <Compile Include="Assets\Scripts\Vo\VersionVo.cs" />
   </ItemGroup>
@@ -307,6 +309,7 @@
     <None Include="Assets\LuaFramework\ToLua\Injection\InjectionBridgeEditorInfo.xml" />
     <None Include="Assets\LuaFramework\ToLua\Injection\LuaInjectionSkipPaths.txt" />
     <None Include="Assets\LuaFramework\ToLua\readme.txt" />
+    <None Include="Assets\Resources\ExtInfo\versionInfo.xml" />
     <None Include="Assets\StreamingAssets\files.txt" />
     <None Include="Assets\StreamingAssets\resIndex.txt" />
     <None Include="Assets\StreamingAssets\versionInfo.xml" />
